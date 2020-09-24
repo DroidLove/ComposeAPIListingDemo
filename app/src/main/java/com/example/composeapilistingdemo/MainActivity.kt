@@ -3,15 +3,19 @@ package com.example.composeapilistingdemo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.foundation.lazy.LazyColumnItems
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.launchInComposition
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import com.example.composeapilistingdemo.ui.ComposeAPIListingDemoTheme
 import com.google.gson.Gson
@@ -33,10 +37,13 @@ class MainActivity : AppCompatActivity() {
         myCoroutine()
         setContent {
             ComposeAPIListingDemoTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("LOADING PLEASE WAIT")
-//                        myCoroutine()
+                    Column(
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalGravity = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
         }
@@ -49,9 +56,7 @@ class MainActivity : AppCompatActivity() {
             // Compose Here
             setContent {
                 ComposeAPIListingDemoTheme {
-                    // A surface container using the 'background' color from the theme
                     Surface(color = MaterialTheme.colors.background) {
-//                    Greeting("Android")
                     handlingUI(it?.body()?.string())
                     }
                 }
@@ -92,22 +97,20 @@ private fun handlingUI(result: String?) {
     val resultList = mappingResult(result)
 
     LazyColumnForIndexed(
-        items = resultList
-    ) {index, item ->
-        Text(text = "$item")
+        items = resultList,
+    ) { index, item ->
+        ContactCard(item)
     }
-
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ComposeAPIListingDemoTheme {
-        Greeting("Android")
+fun ContactCard(name: String) {
+    Card(shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp,
+                start = 4.dp, end = 4.dp)) {
+        Column(Modifier.fillMaxWidth()) {
+            Text(text = "$name",
+                    modifier = Modifier.padding(all = 8.dp))
+        }
     }
 }
